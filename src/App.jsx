@@ -5,12 +5,6 @@ import BookList from "./components/BookList";
 import "./App.css";
 
 function App() {
-  const [bookId, setBookId] = useState("");
-
-  const getBookIdHandler = (id) => {
-    console.log("The ID of document to be edited: ", id);
-    setBookId(id);
-  };
   return (
     <>
       <Navbar bg="dark" variant="dark" className="header">
@@ -22,14 +16,14 @@ function App() {
       <Container style={{ width: "400px" }}>
         <Row className="mt-5">
           <Col>
-            <AddBook id={bookId} setBookId={setBookId} />
+            <AddBook />
           </Col>
         </Row>
       </Container>
       <Container>
         <Row>
           <Col>
-            <BookList getBookId={getBookIdHandler} />
+            <BookList />
           </Col>
         </Row>
       </Container>
