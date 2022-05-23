@@ -1,19 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
+import BookContext from "../context/BookContext";
+
 import BookDataService from "../services/book.services";
+
 import { Table, Button } from "react-bootstrap";
 
-const BookList = ({ getBookId }) => {
-  const [books, setBooks] = useState([]);
+const BookList = () => {
+  const { setBookId, books, getBooks } = useContext(BookContext);
 
   useEffect(() => {
     getBooks();
   }, []);
-
-  const getBooks = async () => {
-    const data = await BookDataService.getAllBooks();
-    console.log(data.docs);
-    setBooks(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-  };
 
   const deleteHandler = async (id) => {
     await BookDataService.deleteBook(id);
@@ -21,12 +18,12 @@ const BookList = ({ getBookId }) => {
   };
 
   return (
-    <>
-      <div className="mb-2">
+    <div className="my-5">
+      {/* <div className="mb-2">
         <Button variant="dark edit" onClick={getBooks}>
           Refresh List
         </Button>
-      </div>
+      </div> */}
 
       {/* <pre>{JSON.stringify(books, undefined, 2)}</pre> */}
       <Table striped bordered hover size="sm">
@@ -50,7 +47,7 @@ const BookList = ({ getBookId }) => {
                 <Button
                   variant="secondary"
                   className="edit"
-                  onClick={() => getBookId(doc.id)}
+                  onClick={() => setBookId(doc.id)}
                 >
                   Edit
                 </Button>
@@ -66,7 +63,7 @@ const BookList = ({ getBookId }) => {
           ))}
         </tbody>
       </Table>
-    </>
+    </div>
   );
 };
 

@@ -1,9 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import BookContext from "../context/BookContext";
+
 import { Form, Alert, InputGroup, Button, ButtonGroup } from "react-bootstrap";
 
 import BookDataService from "../services/book.services";
 
-const AddBook = ({ id, setBookId }) => {
+const AddBook = () => {
+  const { bookId, setBookId, getBooks } = useContext(BookContext);
+
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [status, setStatus] = useState("Available");
@@ -12,11 +16,11 @@ const AddBook = ({ id, setBookId }) => {
   const [message, setMessage] = useState({ error: false, msg: "" });
 
   useEffect(() => {
-    console.log("El id es:", id);
-    if (id) {
+    // console.log("El id es:", bookId);
+    if (bookId) {
       editHandler();
     }
-  }, [id]);
+  }, [bookId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,8 +38,8 @@ const AddBook = ({ id, setBookId }) => {
     // console.log(newBook);
 
     try {
-      if (id) {
-        await BookDataService.updateBook(id, newBook);
+      if (bookId) {
+        await BookDataService.updateBook(bookId, newBook);
         setMessage({ error: false, msg: "Libro actualizado!" });
         setBookId("");
       } else {
@@ -47,13 +51,14 @@ const AddBook = ({ id, setBookId }) => {
     }
     setTitle("");
     setAuthor("");
+    getBooks();
   };
 
   const editHandler = async () => {
     setMessage("");
 
     try {
-      const docSnap = await BookDataService.getBook(id);
+      const docSnap = await BookDataService.getBook(bookId);
       setTitle(docSnap.data().title);
       setAuthor(docSnap.data().author);
       setStatus(docSnap.data().status);
