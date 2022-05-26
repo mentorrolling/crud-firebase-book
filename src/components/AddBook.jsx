@@ -1,12 +1,13 @@
 import React, { useEffect, useState, useContext } from "react";
-import BookContext from "../context/BookContext";
+// import BookContext from "../context/BookContext";
+import { BookContextData } from "../context/BookContext";
 
 import { Form, Alert, InputGroup, Button, ButtonGroup } from "react-bootstrap";
 
 import BookDataService from "../services/book.services";
 
 const AddBook = () => {
-  const { bookId, setBookId, getBooks } = useContext(BookContext);
+  const { bookId, setBookId, getBooks } = BookContextData();
 
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");

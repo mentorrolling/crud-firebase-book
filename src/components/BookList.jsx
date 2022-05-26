@@ -1,12 +1,13 @@
 import React, { useContext, useEffect } from "react";
-import BookContext from "../context/BookContext";
+// import BookContext from "../context/BookContext";
+import { BookContextData } from "../context/BookContext";
 
 import BookDataService from "../services/book.services";
 
 import { Table, Button } from "react-bootstrap";
 
 const BookList = () => {
-  const { setBookId, books, getBooks } = useContext(BookContext);
+  const { setBookId, books, getBooks } = BookContextData();
 
   useEffect(() => {
     getBooks();
