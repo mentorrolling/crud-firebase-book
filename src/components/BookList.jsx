@@ -1,12 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+
+import bookServices from "../services/book.services";
 
 import { Table, Button } from "react-bootstrap";
 
 const BookList = () => {
+  const [books, setBooks] = useState([]);
+
+  const getBooks = async () => {
+    let data = await bookServices.getAllBooks();
+    setBooks(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+  };
+
+  useEffect(() => {
+    getBooks();
+  }, []);
+
   return (
     <>
       <div className="mb-2">
-        <Button variant="dark edit">Refresh List</Button>
+        <Button variant="dark edit" onClick={getBooks}>
+          Refresh List
+        </Button>
       </div>
 
       {/* <pre>{JSON.stringify(books, undefined, 2)}</pre> */}
@@ -20,7 +35,17 @@ const BookList = () => {
             <th>Action</th>
           </tr>
         </thead>
-        <tbody></tbody>
+        <tbody>
+          {books.map((book, index) => (
+            <tr key={book.id}>
+              <td>{index + 1}</td>
+              <td>{book.title}</td>
+              <td>{book.author}</td>
+              <td>{book.status}</td>
+              <td></td>
+            </tr>
+          ))}
+        </tbody>
       </Table>
     </>
   );
