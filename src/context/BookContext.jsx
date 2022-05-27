@@ -1,7 +1,7 @@
 import { createContext, useState, useContext } from "react";
 import BookDataService from "../services/book.services";
 
-export const BookContext = createContext(null);
+export const BookContext = createContext();
 
 const BookContextProvider = ({ children }) => {
   const [bookId, setBookId] = useState("");
