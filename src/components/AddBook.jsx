@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { BookContext } from "../context/BookContext";
+
 import bookServices from "../services/book.services";
 
 import { Form, Alert, InputGroup, Button, ButtonGroup } from "react-bootstrap";
@@ -11,9 +13,16 @@ const AddBook = () => {
   const [flag, setFlag] = useState(true);
   const [message, setMessage] = useState({ error: false, msg: "" });
 
+  const { bookId, setBookId, getBooks } = useContext(BookContext);
+
+  useEffect(() => {
+    if (bookId) {
+      bookEdit();
+    }
+  }, [bookId]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (title === "" || author === "") {
       setMessage({ error: true, msg: "Debe ingresar todos los datos" });
       return;
@@ -23,11 +32,41 @@ const AddBook = () => {
       author,
       status,
     };
+    try {
+      if (bookId) {
+        await bookServices.updateBook(bookId, newBook);
+        setMessage({ error: false, msg: "Libro Actualizado" });
+        setBookId("");
+        setTitle("");
+        setAuthor("");
+      } else {
+        await bookServices.addBook(newBook);
+        setMessage({ error: false, msg: "Nuevo libro agregado!" });
+        setTitle("");
+        setAuthor("");
+      }
+    } catch (err) {
+      setMessage({ error: false, msg: err.message });
+    }
+    getBooks();
+  };
 
-    await bookServices.addBook(newBook);
-    setMessage({ error: false, msg: "Nuevo libro agregado!" });
-    setTitle("");
-    setAuthor("");
+  const bookEdit = async () => {
+    setMessage("");
+    try {
+      const bookSnap = await bookServices.getBook(bookId);
+      setTitle(bookSnap.data().title);
+      setAuthor(bookSnap.data().author);
+      setStatus(bookSnap.data().status);
+
+      if (bookSnap.data().status === "Available") {
+        setFlag(true);
+      } else {
+        setFlag(false);
+      }
+    } catch (err) {
+      setMessage({ error: true, msg: err.message });
+    }
   };
 
   return (
